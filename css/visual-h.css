@@ -1,0 +1,387 @@
+:root
+{
+	--SystemPrimary: rgb(178,34,34); /* É a cor predominante no sistema e define a cor de por exemplor: Nav-bar; */
+	--SystemSecondary: rgb(255,255,255); /* É a cor de texto de componentes que usem o SystemPrimary */
+	--SystemPrimarySelected: rgb(128,0,0); /* Para itens selecionados */
+
+	--SystemBarSize:1.5cm;
+	--SystemBorderColor:rgb(220,220,220);
+
+	--sysBorC: rgba(0,0,0,0.1); /* Define a cor de borda dos elementos */
+
+
+	--attention_color:rgba(255,165,0,1); /* cor que denota algo para se prestar atenção */
+	--attention_color_selected:rgba(240,145,0,1); /* cor que denota algo para se prestar atenção */
+
+	--ready_color:rgba(43,150,59,1); /* Cor que denota que está tudo pronto */
+	--ready_color_selected:rgba(23,130,39,1); /* Cor que denota que está tudo pronto */
+
+	--danger_color: rgba(178,34,34,1); /* Cor que denota que está tudo pronto */
+
+  	--ccolor: rgba(255,255,255,0.1); /* cor do fundo do container */
+  	--borcolor: rgba(0,0,0,0.1); /* cor da borda para os itens do side bar */
+  	--icolorpop: rgba(255,255,255,1); /* cor dos icones dos botões da popover */
+  	
+  	--icolorhover:rgba(2,128,130, 1); /* cor de fundo de icone de carregar ao passsar o mouse */;
+  	--loadcolorhover:rgba(255,165,0,1); /* cor de fundo de icone de carregar ao passar o mouse*/
+  	--closeicolor:rgba(200,20,10,1); /* cor de fundo do botão de fechar*/
+  }
+
+body, html
+{
+	height: 100%;
+	width: 100%;
+	margin: 0px;
+	min-height: 500px;
+	min-width: 400px;
+	font-family: Verdana, Helvetica;
+}
+
+/* -------------------------Definições para a NAVBAR --------------------------*/
+
+.v-nav-bar
+{	
+	float: left;
+	position: absolute;
+	width: 100%;
+	height: var(--SystemBarSize);
+	padding-left: 75px;
+	padding-right: 75px;
+	background: var(--SystemPrimary);
+	border: 1px solid rgba(0,0,0,0.4);
+	box-shadow: 0px 0px 4px 1px rgba(0,0,0,0.8);
+	z-index: 1001;
+}
+.v-nav-bar-item
+{
+	float: left;
+	position: relative;
+	height: 100%;
+	font-size: 18px;
+	font-family: verdana, helvetica;
+	line-height: var(--SystemBarSize);
+	color: var(--SystemSecondary);
+	cursor: pointer;
+}
+.v-nav-bar-item:hover
+{
+	text-shadow: 0px 0px 5px var(--SystemSecondary);
+}
+
+/* -------------------------Definições para a Side Bar --------------------------*/
+.v-side-bar
+{
+	float: left;
+	position: absolute;
+	width: var(--SystemBarSize);
+	height: calc(100% - var(--SystemBarSize));
+	margin-top: var(--SystemBarSize);
+	padding-top: 75px;
+	background: rgba(255,255,255,0.5);
+	border-right:1px solid var(--SystemBorderColor);
+	z-index: 1000;
+	display: none;
+}
+.v-side-bar-item
+{
+	float: left;
+	width: 100%;
+	height: var(--SystemBarSize);
+	line-height: var(--SystemBarSize);
+	text-align: center;
+	color: var(--SystemPrimary);
+
+	border-top:1px solid var(--SystemBorderColor);
+	border-bottom:1px solid var(--SystemBorderColor);
+	cursor: pointer;
+}
+
+/*---------------------------Properties - Bar----------------------------------*/
+
+.v-properties-bar
+{
+	position: absolute;
+	width:300px; 
+	height:calc(100% - 60px); 
+	margin-left:calc(100% - 300px); 
+	margin-top: 60px;
+	background:rgba(255,255,255,0.8); 
+	z-index: 1000;
+	color:rgba(0,0,0,0.6);
+	padding: 15px;
+	padding-top: 10px;
+	display: none;
+	border-left:1px solid rgba(0,0,0,0.1);
+	word-wrap: break-word;
+}
+.v-properties-bar-head
+{
+	float: left;
+	width: 100%;
+	height: auto;
+	font-size: 16px;
+	border-bottom: 1px solid rgba(0,0,0,0.1);
+	line-height: 40px;
+	margin-bottom: 20px;
+}
+
+.v-properties-content
+{
+	width: 100%;
+	height: auto;
+	float: left;
+	border-bottom:1px solid rgba(0,0,0,0.1);
+	padding-bottom: 10px;
+}
+.v-properties-head
+{
+	width: 100%;
+	height: auto;
+	float: left;
+	line-height: 40px;
+	font-size: 14px;
+	position: relative;
+}
+.v-properties-body
+{
+	width: 100%;
+	min-height: 13;
+	height: auto;
+	float: left;
+	position: relative;
+	font-size: 12px;
+}
+
+/* ------------------------- Container(Lugar onde as imagens serão colocadas) ----------------- */
+.v-container
+{
+	float: left;
+	position: relative;
+	width: calc(100% + 60px);
+	height: calc(100% - 60px);
+	overflow: hidden;
+}
+#v-draw-space
+{
+	position:relative;
+	overflow: hidden;
+}
+
+/* ----------------------------- Elementos usados para fazer o carregamento de toda e qualque rimagem --------------------- */
+.v-load-file
+{
+	float: left;
+	width: 40px;
+	height: 40px;
+	text-align: center;
+	background: var(--attention_color);
+	line-height: 40px;
+	color: var(--SystemSecondary);;
+	cursor: pointer;	
+	border: 1px solid rgba(0,0,0,0.4);
+}
+.v-load-file:hover
+{
+	background: var(--attention_color_selected);
+	text-shadow: 0px 0px 5px var(--SystemSecondary);
+}
+.v-submit-file
+{
+	float: left;
+	width: 40px;
+	height: 40px;
+	text-align: center;
+	background: var(--ready_color);
+	line-height: 40px;
+	color: var(--SystemSecondary);
+	cursor: pointer;
+	border: 1px solid rgba(0,0,0,0.4);
+}
+.v-submit-file:hover
+{
+	background: var(--ready_color_selected);
+	text-shadow: 0px 0px 5px var(--SystemSecondary);
+}
+
+/* ----------------------------- FIM--------------------- */
+
+/* ----------------------------Notações meramente auxiliares --------------- */
+
+.v-side-bar-item-unwatch
+{
+	display: none;
+}
+.v-side-bar-item-watch
+{
+	display: block;
+}
+
+
+/* ----------------------------- FIM--------------------- */
+
+/* ----------------------------- Estilo do menu ao clicar um item do sidebar  --------------------- */
+
+.v-popover-menu
+{
+	background: var(--SystemPrimary) !important;
+	width: 150px;
+}
+.v-popover-menu-content
+{
+	margin: 0px !important;
+	padding: 0px !important;
+}
+.v-menu-item
+{
+	cursor: pointer;
+	float: left;
+	color:  var(--SystemSecondary);
+	width: 100%;
+	height: 40px;
+	line-height: 40px;
+	text-align: left;
+	padding-left: 5px !important;
+}
+.v-menu-item:hover
+{
+	background: var(--SystemPrimarySelected);
+	text-shadow: 0px 0px 5px var(--SystemSecondary);
+}
+
+/* ----------------------------- FIM--------------------- */
+
+/* ----------------------------- Estilo da janela de cada imagem --------------------- */
+
+.v-window
+{
+	float: left;
+	position:absolute;
+	background:rgba(0,0,0,0.5);
+	border: solid 1px rgba(0,0,0,0.2);
+	z-index: 3;
+}
+.v-window-nav
+{
+	height: 30px;
+	background: var(--bcolor);
+	border-bottom: solid 1px rgba(0,0,0,0.2);
+	color:var(--SystemSecondary);
+	padding-left:5px;
+}
+.v-window-nav-left
+{
+	float: left;
+	line-height: 30px;
+}
+.v-window-nav-right
+{
+	float: right;
+	width: 40px;
+	height: 30px;
+	line-height: 30px;
+	text-align: center;
+	cursor: pointer;
+	margin-top: -1px;
+	margin-right: -1px;
+}
+
+.v-window-nav-right:hover
+{
+	background: var(--danger_color);
+	text-shadow: 0px 0px 5px white;
+	color:white;
+}
+
+/* Estilo para o modal */
+
+.v-modal-background
+{
+	width: 100%;
+	height: 100%;
+	background: rgba(0,0,0,0.9);
+	position: absolute;
+	z-index: 1000000000000000;
+}
+.v-modal
+{
+	background: rgba(255,255,255,1);
+	margin: auto;
+	padding: 5px;
+	border: 1px solid rgba(0,0,0,1);
+}
+.v-modal-content
+{
+	width: 100%;
+	height: 100%;
+	padding: 5px;
+	float: left;
+	background: white;
+}
+.v-modal-head, .v-modal-body, .v-modal-footer
+{
+	float: left;
+	color: rgba(0,0,0,0.8);
+	width: 100%;
+}
+.v-modal-head-line
+{
+	float: left;
+	height: 100%;
+	width: 100%;
+	font-family: verdana, helvetica;
+	font-size: 14px;
+	font-weight: bold;
+}
+.v-modal-ask-line
+{
+	width: 100%;
+	height: 100%;
+	float: left;
+	font-size: 12px;
+	font-weight: none;
+}
+.v-modal-footer-line
+{
+	width: 100px;
+	height: auto;
+	margin:auto;
+}
+
+.v-btn-apply,.v-btn-cancel
+{
+	cursor: pointer;
+}
+
+.v-btn-apply, .v-btn-cancel
+{
+	width: 40px;
+	height: 40px;
+	float: left;
+	text-align: center;
+	line-height: 40px;
+}
+.v-btn-apply
+{
+	color: white;
+	background: var(--ready_color);
+	border:1px solid rgba(0,0,0,0.4);
+	border-left:none;
+	border-bottom:1px solid rgba(0,0,0,0.4);
+}
+.v-btn-apply:hover
+{
+	background: var(--ready_color_selected);
+}
+.v-btn-cancel
+{
+	color: rgba(0,0,0,0.8);
+	background: rgba(255,255,255,1);
+	border:1px solid rgba(0,0,0,0.4);
+}
+
+.v-btn-cancel:hover
+{
+	background: rgba(220,220,220,1);
+}
+
+

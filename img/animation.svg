@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg width='188px' height='188px' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" class="uil-hourglass">
+	<style type="text/css">
+		.glass
+		{
+		 	fill : white; 
+		 	stroke : rgba(178,34,34,0.3);
+		 	stroke-width : 5;
+		 	stroke-miterlimit : 10;
+		}
+		.sand1
+		{
+		 	clip-path : url(#uil-hourglass-clip1);
+		 	fill : rgba(178,34,34,1);
+		}
+		.sand2
+		{
+			clip-path : url(#uil-hourglass-clip2); 
+			fill : rgba(178,34,34,1); 
+		}
+		.clip1
+		{
+			animation: clip1 1s infinite;
+		}
+		.clip2
+		{
+			animation: clip2 1s infinite;
+		}
+		.hourglass
+		{
+			animation: hourglass 1s infinite;
+		}
+		@keyframes clip2
+		{
+
+			from
+			{
+				height:0px;
+				top:80px;
+				animation-timing-function: ease-in;
+			}
+			to
+			{
+				height:25px;
+				top:55;
+				animation-timing-function: ease-out;
+			}
+		}
+
+		@keyframes clip1
+		{
+
+			from
+			{
+				height:25px;
+				top:20px;
+				animation-timing-function: ease-in;
+			}
+			to
+			{
+				height:0px;
+				top:45;
+				animation-timing-function: ease-out;
+			}
+		}
+
+		@keyframes hourglass
+		{
+			from
+			{
+				transform: rotate(0deg);
+    			transform-origin: 50% 50%;
+			}
+			to
+			{
+				transform: rotate(180deg);
+    			transform-origin: 50% 50%;
+			}
+			
+		}
+
+		<!--<animate attributeName="height" from="25" to="0" dur="0.9s" repeatCount="indefinite" vlaues="25;0;0" keyTimes="0;0.5;1"></animate>
+				<animate attributeName="y" from="20" to="45" dur="0.9s" repeatCount="indefinite" vlaues="20;45;45" keyTimes="0;0.5;1"></animate>
+			-->
+
+		<!--<animae attributeName="height" from="0" to="25" dur="0.9s" repeatCount="indefinite" vlaues="0;25;25" keyTimes="0;0.5;1">
+				</animate>
+				<animate attributeName="y" from="80" to="55" dur="0.9s" repeatCount="indefinite" vlaues="80;55;55" keyTimes="0;0.5;1">
+				</animate>
+			-->
+	</style>
+
+	<g class = "hourglass">
+		<path d="M58.4,51.7c-0.9-0.9-1.4-2-1.4-2.3s0.5-0.4,1.4-1.4 C70.8,43.8,79.8,30.5,80,15.5H70H30H20c0.2,15,9.2,28.1,21.6,32.3c0.9,0.9,1.4,1.2,1.4,1.5s-0.5,1.6-1.4,2.5 C29.2,56.1,20.2,69.5,20,85.5h10h40h10C79.8,69.5,70.8,55.9,58.4,51.7z" class="glass"></path>
+		<clipPath id="uil-hourglass-clip2">
+			<rect x="15" y="55" width="70" height="25" class="clip1">
+			</rect>
+		</clipPath>
+
+		<clipPath id="uil-hourglass-clip1">
+			<rect x="15" y="20" width="70" height="25" class="clip2">
+			</rect>
+		</clipPath>
+		<path d="M29,23c3.1,11.4,11.3,19.5,21,19.5S67.9,34.4,71,23H29z" class="sand1">
+		</path>
+		<path d="M71.6,78c-3-11.6-11.5-20-21.5-20s-18.5,8.4-21.5,20H71.6z" class="sand2">
+		</path>
+	</g>
+</svg>

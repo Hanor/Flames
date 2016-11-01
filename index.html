@@ -1,0 +1,71 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>Flames</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="favicon" href="favicon.ico"/>
+
+        <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="css/main.css">
+        <link rel="stylesheet" href="css/bootstrap.css">
+        <link rel="stylesheet" href="css/visual-h.css">
+
+    </head>
+    <body>
+        <div class = "v-nav-bar">
+            <div class = "v-nav-bar-item">
+                <span class = "glyphicon glyphicon-fire"></span> Flames 0.3.5
+            </div>
+        </div>
+
+        <div class = "v-side-bar">
+        </div>
+
+        <div class = "v-properties-bar">
+            <div class = "v-properties-bar-head">
+                <span class = "glyphicon glyphicon-info-sign"></span> Informações da imagem
+            </div>
+            <div id = "v-properties-caracteristicas" class = "v-properties-content">
+                <div class = "v-properties-head">
+                    <span class = "glyphicon glyphicon-camera"></span> Caracteristicas
+                </div>
+                <div class =  "v-properties-body">
+                </div>
+            </div>
+
+            <div id = "v-properties-historico" class = "v-properties-content">
+                <div class = "v-properties-head">
+                    <span class = "glyphicon glyphicon-book"></span> Histórico de inferências 
+                </div>
+                <div class =  "v-properties-body">
+                </div>
+            </div>
+
+            <div id = "v-properties-histograma" class = "v-properties-content">
+                <div class = "v-properties-head">
+                    <span class = "glyphicon glyphicon-stats"></span> Histograma da imagem 
+                </div>
+                <div class =  "v-properties-body" style = "height:300px">
+                </div>
+            </div>
+        </div>
+
+        <div class = "v-container">
+            <div id = "v-draw-space"> 
+            </div>
+        </div>
+    </body>
+    <includes>
+        <script src="js/external/modernizr-2.8.3.min.js"></script>
+        <script src="js/external/jquery-1.12.0.min.js"></script>
+        <script src="js/external/jquery-ui.js"></script>
+        <script src="js/external/bootstrap.js"></script>
+        <script src="js/external/d3.js"></script>
+        <script src="js/core/flames-engine.js"></script>
+        <script src="js/commons/init.js"></script>
+    </includes>
+</html>
