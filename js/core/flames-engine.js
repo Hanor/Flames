@@ -52,8 +52,8 @@ var Engine = function(elem)
 
 		Handler.Vars.Config.width = 50000;
 		Handler.Vars.Config.height = 50000;
-		Handler.Vars.Config.window_height = $('body').height();
-		Handler.Vars.Config.window_width = $('body').width();
+		Handler.Vars.Config.windowHeight = $('body').height();
+		Handler.Vars.Config.windowWidth = $('body').width();
 
 		Tool.elem = $('NULL');
 		Tool.popover = false;
@@ -61,13 +61,13 @@ var Engine = function(elem)
 
 		HTML.Container = elem;
 		HTML.DrawSpace = $("#v-draw-space");
-		HTML.Nav_Bar = $(".v-nav-bar");
-		HTML.Side_Bar = $(".v-side-bar");
-		HTML.Properties_Bar = {};
-		HTML.Properties_Bar.Elem = $('.v-properties-bar');
-		HTML.Properties_Bar.Caracteristicas = $(".v-properties-bar").find("#v-properties-caracteristicas").find('.v-properties-body');
-		HTML.Properties_Bar.Historico = $(".v-properties-bar").find("#v-properties-historico").find('.v-properties-body');
-		HTML.Properties_Bar.Histograma = $(".v-properties-bar").find("#v-properties-histograma").find('.v-properties-body');
+		HTML.NavBar = $(".v-nav-bar");
+		HTML.SideBar = $(".v-side-bar");
+		HTML.PropertiesBar = {};
+		HTML.PropertiesBar.Elem = $('.v-properties-bar');
+		HTML.PropertiesBar.Caracteristicas = $(".v-properties-bar").find("#v-properties-caracteristicas").find('.v-properties-body');
+		HTML.PropertiesBar.Historico = $(".v-properties-bar").find("#v-properties-historico").find('.v-properties-body');
+		HTML.PropertiesBar.Histograma = $(".v-properties-bar").find("#v-properties-histograma").find('.v-properties-body');
 
 		//google.charts.load('current', {'packages':['corechart']}); // ------ biblioteca do google para charts -----
 
@@ -404,7 +404,7 @@ var Engine = function(elem)
 
 	/* ----------------------------------------------------- Componentes HTML que serão carregados conforme demanda -----------------------------------------------*/
 
-	HTML.Templates.Askable_Body =  function(ask, config)
+	HTML.Templates.AskableBody =  function(ask, config)
 	{
 		var template = '';
 		template += '<div class = "v-modal-ask-line">'
@@ -431,7 +431,7 @@ var Engine = function(elem)
 		template += '</div>'
 		return template;
 	}
-	HTML.Templates.Askable_Head =  function(ask)
+	HTML.Templates.AskableHead =  function(ask)
 	{
 		var template = '';
 		template += '<div class = "v-modal-head-line">'
@@ -440,7 +440,7 @@ var Engine = function(elem)
 		template += '</div>'		
 		return template;
 	}
-	HTML.Templates.Askable_Footer =  function()
+	HTML.Templates.AskableFooter =  function()
 	{
 		var template = '';
 
@@ -463,7 +463,7 @@ var Engine = function(elem)
 		template += '<img src = "img/animation.svg" style = "width:100px; height:100px; margin-left:'+ margin_left +'px; margin-top:'+ margin_top +'px">'
 		return template;
 	}
-	HTML.Templates.Load_New_Image =  function(name, id, original)
+	HTML.Templates.LoadNewImage =  function(name, id, original)
 	{
 		var template = '';
 		template += '<div id = "v-img-'+ id +'" class = "v-window" data-id = "'+ id +'">'
@@ -501,7 +501,7 @@ var Engine = function(elem)
 		template += '</div>'
 		return template;
 	}
-	HTML.Templates.Open_Image =  function()
+	HTML.Templates.OpenImage =  function()
 	{
 		var template = '';
 		template += '<div style = "float:left; height:50px; width:300px">';
@@ -525,7 +525,7 @@ var Engine = function(elem)
 		template += '</div>'
 		return template;
 	}
-	HTML.Templates.Popover_Menu = function()
+	HTML.Templates.PopoverMenu = function()
 	{
 		var template = '';
 		template += '<div class="popover v-popover-menu" role="tooltip">'
@@ -534,19 +534,19 @@ var Engine = function(elem)
 		template += '</div>'
 		return template;
 	}
-	HTML.Templates.Properties_Caracteristicas = function(obj)
+	HTML.Templates.PropertiesInformations = function(obj)
 	{
 		var template = '';
 		template += '<b>Nome: </b>'+ obj.imgObj.name +"<br>";
 		return template;
 	}
-	HTML.Templates.Properties_Histograma = function(obj)
+	HTML.Templates.PropertiesHistograma = function(obj)
 	{
 		var template = '';
 		template += 'Ainda não foi desenvolvida.';
 		return template;
 	}
-	HTML.Templates.Properties_Historico = function(obj)
+	HTML.Templates.PropertiesHistory = function(obj)
 	{
 		var template = "";
 		if(obj.imgObj.history.length > 0)
@@ -578,11 +578,12 @@ var Engine = function(elem)
 					template += end +' <span style = "font-size:14px; color:red" class = "glyphicon glyphicon-arrow-right"></span> '
 			}
 		}
-		else
+		else 
 			template += "Nada foi feito até o momento.";
+
 		return template;
 	}
-	HTML.Templates.Side_Bar = function()
+	HTML.Templates.SideBar = function()
 	{
 		var template = '';
 	    template += '<div id = "v-open-image" class = "v-side-bar-item v-side-bar-item-top v-side-bar-item-watch" title = "Abrir imagem" data-placement="right" data-opt = "Open">'
@@ -677,6 +678,14 @@ var Engine = function(elem)
 			height: Handler.Vars.Config.height
 		})
 
+		var height = $('body').height();
+		var width = $('body').width();
+
+		Handler.Vars.Eye.frame.parent().css({
+			height: 'calc('+ height +'px - var(--SystemBarSize))',
+			width: 'calc('+ width +'px - var(--SystemBarSize))'
+		})
+
 		HTML.DrawSpace.css('transform', 'translate(-'+ Handler.Vars.Eye.x +'px, -'+ Handler.Vars.Eye.y +'px)');
 	}
 	IU.Engine.Start_Image = function(d)
@@ -723,6 +732,16 @@ var Engine = function(elem)
 
 		$( window ).resize(function(ev)
 		{
+			var height = $('body').height();
+			var width = $('body').width();
+
+			Handler.Vars.Eye.frame.parent().css({
+				height: 'calc('+ height +'px - var(--SystemBarSize))',
+				width: 'calc('+ width +'px - var(--SystemBarSize))'
+			})
+
+			Handler.Vars.Config.windowHeight = height;
+			Handler.Vars.Config.windowWidth = width;
 			ev.preventDefault();
 		})
 
@@ -790,9 +809,12 @@ var Engine = function(elem)
 					IU.Events.Popover();
 				}
 				else if(opt == "Unload")
+				{
 					IU.Unload.Interface();
+				}
 
-				IU.Animation.ChangeColor(elem, true);
+				if(opt != "Unload")
+					IU.Animation.ChangeColor(elem, true);
 			}
 			else
 				IU.Unset.Tool();
@@ -1010,7 +1032,7 @@ var Engine = function(elem)
 		var version = Handler.Vars.Version + 1;
 		var id = "v-img-canvas-"+ version;
 
-		HTML.DrawSpace.append(HTML.Templates.Load_New_Image(name, version, true));
+		HTML.DrawSpace.append(HTML.Templates.LoadNewImage(name, version, true));
 		canvas = document.getElementById(id);
         image.onload = function() 
         {
@@ -1053,7 +1075,7 @@ var Engine = function(elem)
 		var version = Handler.Vars.Version + 1;
 		var id = "v-img-canvas-"+ version +"";
 
-		HTML.DrawSpace.append(HTML.Templates.Load_New_Image(name,  version));
+		HTML.DrawSpace.append(HTML.Templates.LoadNewImage(name,  version));
 		canvas = document.getElementById(id);
 
 		canvas.width = img.width;
@@ -1095,7 +1117,7 @@ var Engine = function(elem)
 				container:"body",
 				content: HTML.Templates.Threshold(),
 				trigger:"manual",
-				template: HTML.Templates.Popover_Menu()
+				template: HTML.Templates.PopoverMenu()
 			})
 		}
 	}
@@ -1112,9 +1134,9 @@ var Engine = function(elem)
 		else if(type == 'askable')
 		{
 
-			$('.v-modal-background').find('.v-modal-head').append(HTML.Templates.Askable_Head());
-			$('.v-modal-background').find('.v-modal-body').append(HTML.Templates.Askable_Body(to_ask, config));
-			$('.v-modal-background').find('.v-modal-footer').append(HTML.Templates.Askable_Footer());
+			$('.v-modal-background').find('.v-modal-head').append(HTML.Templates.AskableHead());
+			$('.v-modal-background').find('.v-modal-body').append(HTML.Templates.AskableBody(to_ask, config));
+			$('.v-modal-background').find('.v-modal-footer').append(HTML.Templates.AskableFooter());
 
 			$('.v-modal-footer').find('.v-btn-apply').on("click", function(ev)
 			{
@@ -1168,12 +1190,17 @@ var Engine = function(elem)
 		{
 			var current = Handler.Vars.Selected;
 
-			HTML.Properties_Bar.Caracteristicas.empty().append(HTML.Templates.Properties_Caracteristicas(current));
-			HTML.Properties_Bar.Historico.empty().append(HTML.Templates.Properties_Historico(current));
-			HTML.Properties_Bar.Histograma.empty().append(HTML.Templates.Properties_Histograma(current));
+			if(current.imgObj)
+			{
+				HTML.PropertiesBar.Caracteristicas.empty().append(HTML.Templates.PropertiesInformations(current));
+				HTML.PropertiesBar.Historico.empty().append(HTML.Templates.PropertiesHistory(current));
+				HTML.PropertiesBar.Histograma.empty().append(HTML.Templates.PropertiesHistograma(current));
 
-			HTML.Properties_Bar.Histograma.empty();
-			//Handler.Helper.Histograma(HTML.Properties_Bar.Histograma[0], current);
+				HTML.PropertiesBar.Histograma.empty();
+				//Handler.Helper.Histograma(HTML.PropertiesBar.Histograma[0], current);
+			}
+			else
+				IU.Unset.Properties();
 
 			$(".v-properties-bar").show();
 		}
@@ -1186,7 +1213,7 @@ var Engine = function(elem)
 			placement:"right",
 			title:"Abrir imagem",
 			container:"body",
-			content: HTML.Templates.Open_Image(),
+			content: HTML.Templates.OpenImage(),
 			trigger:"manual",
 			template: HTML.Templates.Popover()
 		})
@@ -1199,9 +1226,9 @@ var Engine = function(elem)
 		HTML.Container.css({
 			width: width
 		})
-		HTML.Side_Bar.fadeIn(300);
+		HTML.SideBar.fadeIn(300);
 
-		HTML.Side_Bar.append(HTML.Templates.Side_Bar());
+		HTML.SideBar.append(HTML.Templates.SideBar());
 	}
 
 	/* ------------------------------------------- Reseta elementos HTML criados e remove o que ja não é mais necessário ----------------------------------------*/
@@ -1235,19 +1262,19 @@ var Engine = function(elem)
 	}
 	IU.Unload.Propperties = function()
 	{
-		HTML.Properties_Bar.Caracteristicas.empty();
-		HTML.Properties_Bar.Historico.empty();
-		HTML.Properties_Bar.Histograma.empty();
-		HTML.Properties_Bar.Elem.hide();
+		HTML.PropertiesBar.Caracteristicas.empty();
+		HTML.PropertiesBar.Historico.empty();
+		HTML.PropertiesBar.Histograma.empty();
+		HTML.PropertiesBar.Elem.hide();
 	}
 
 	/* ------------------------------------------- Controla variavéis e elementos do HTML para retroceder ao estado original ----------------------------------------*/
 
 	IU.Unset.Properties =  function()
 	{
-		HTML.Properties_Bar.Caracteristicas.empty().append("Nada selecionado.");
-		HTML.Properties_Bar.Historico.empty().append("Nada selecionado.");
-		HTML.Properties_Bar.Histograma.empty().append("Nada selecionado.");
+		HTML.PropertiesBar.Caracteristicas.empty().append("Nada selecionado.");
+		HTML.PropertiesBar.Historico.empty().append("Nada selecionado.");
+		HTML.PropertiesBar.Histograma.empty().append("Nada selecionado.");
 	}
 	IU.Unset.Tool = function()
 	{

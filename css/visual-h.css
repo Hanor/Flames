@@ -32,9 +32,10 @@ body, html
 	height: 100%;
 	width: 100%;
 	margin: 0px;
-	min-height: 500px;
+	min-height: 600px;
 	min-width: 400px;
 	font-family: Verdana, Helvetica;
+	overflow: none;
 }
 
 /* -------------------------Definições para a NAVBAR --------------------------*/
@@ -42,7 +43,7 @@ body, html
 .v-nav-bar
 {	
 	float: left;
-	position: absolute;
+	position: relative;
 	width: 100%;
 	height: var(--SystemBarSize);
 	padding-left: 75px;
@@ -72,14 +73,12 @@ body, html
 .v-side-bar
 {
 	float: left;
-	position: absolute;
+	position: relative;
 	width: var(--SystemBarSize);
 	height: calc(100% - var(--SystemBarSize));
-	margin-top: var(--SystemBarSize);
 	padding-top: 75px;
 	background: rgba(255,255,255,0.5);
 	border-right:1px solid var(--SystemBorderColor);
-	z-index: 1000;
 	display: none;
 }
 .v-side-bar-item
@@ -95,43 +94,100 @@ body, html
 	border-bottom:1px solid var(--SystemBorderColor);
 	cursor: pointer;
 }
+/* ------------------------- Container(Lugar onde as imagens serão colocadas) ----------------- */
+.v-container
+{
+	float: left;
+	position: relative;
+	overflow: hidden;
+}
+#v-draw-space
+{
+	position:relative;
+	overflow: none;
+}
 
 /*---------------------------Properties - Bar----------------------------------*/
+@media(min-width: 600px)
+{
+	.v-properties-bar
+	{
+		position: absolute;
+		width:300px; 
+		height:calc(100% - var(--SystemBarSize)); 
 
-.v-properties-bar
-{
-	position: absolute;
-	width:300px; 
-	height:calc(100% - 60px); 
-	margin-left:calc(100% - 300px); 
-	margin-top: 60px;
-	background:rgba(255,255,255,0.8); 
-	z-index: 1000;
-	color:rgba(0,0,0,0.6);
-	padding: 15px;
-	padding-top: 10px;
-	display: none;
-	border-left:1px solid rgba(0,0,0,0.1);
-	word-wrap: break-word;
-}
-.v-properties-bar-head
-{
-	float: left;
-	width: 100%;
-	height: auto;
-	font-size: 16px;
-	border-bottom: 1px solid rgba(0,0,0,0.1);
-	line-height: 40px;
-	margin-bottom: 20px;
-}
+		margin-left:calc(100% - 300px); 
+		margin-top:var(--SystemBarSize);
 
-.v-properties-content
+		background:rgba(255,255,255,0.8); 
+		z-index: 1000;
+		color:rgba(0,0,0,0.6);
+		padding: 15px;
+		padding-top: 10px;
+		display: none;
+		border-left:1px solid rgba(0,0,0,0.1);
+		word-wrap: break-word;
+
+	}
+	.v-properties-bar-head
+	{
+		float: left;
+		width: 100%;
+		height: auto;
+		font-size: 16px;
+		border-top: 1px solid rgba(0,0,0,0.1);
+		border-bottom: 1px solid rgba(0,0,0,0.1);
+		line-height: 40px;
+		margin-bottom: 20px;
+	}
+	.v-properties-content
+	{
+		width: 100%;
+		height: auto;
+		float: left;
+		border-bottom:1px solid rgba(0,0,0,0.1);
+		padding-bottom: 10px;
+		padding-left: 15px;
+	}
+}
+@media(max-width: 599px)
 {
-	width: 100%;
-	height: auto;
-	float: left;
-	border-bottom:1px solid rgba(0,0,0,0.1);
-	padding-bottom: 10px;
+	.v-properties-bar
+	{
+		position: relative;
+		float: left;
+		width:100%; 
+		height: auto;
+		background:rgba(255,255,255,0.8);
+		z-index: 1000;
+		color:rgba(0,0,0,0.6);
+		display: none;
+		border-left:1px solid rgba(0,0,0,0.1);
+		word-wrap: break-word;
+	}
+	.v-properties-bar-head
+	{
+		float: left;
+		width: 100%;
+		height: auto;
+		font-size: 16px;
+		border-top: 1px solid rgba(0,0,0,0.1);
+		border-bottom: 1px solid rgba(0,0,0,0.1);
+		line-height: 40px;
+		margin-bottom: 20px;
+		padding-left: 15px;
+		background: var(--SystemPrimary);
+		color: var(--SystemSecondary);
+	}
+	.v-properties-content
+	{
+		width: 100%;
+		height: auto;
+		float: left;
+		border-bottom:1px solid rgba(0,0,0,0.1);
+		padding-bottom: 10px;
+		padding-left: 15px;
+	}
 }
 .v-properties-head
 {
@@ -151,22 +207,6 @@ body, html
 	position: relative;
 	font-size: 12px;
 }
-
-/* ------------------------- Container(Lugar onde as imagens serão colocadas) ----------------- */
-.v-container
-{
-	float: left;
-	position: relative;
-	width: calc(100% + 60px);
-	height: calc(100% - 60px);
-	overflow: hidden;
-}
-#v-draw-space
-{
-	position:relative;
-	overflow: hidden;
-}
-
 /* ----------------------------- Elementos usados para fazer o carregamento de toda e qualque rimagem --------------------- */
 .v-load-file
 {
@@ -203,8 +243,6 @@ body, html
 	text-shadow: 0px 0px 5px var(--SystemSecondary);
 }
 
-/* ----------------------------- FIM--------------------- */
-
 /* ----------------------------Notações meramente auxiliares --------------- */
 
 .v-side-bar-item-unwatch
@@ -215,9 +253,6 @@ body, html
 {
 	display: block;
 }
-
-
-/* ----------------------------- FIM--------------------- */
 
 /* ----------------------------- Estilo do menu ao clicar um item do sidebar  --------------------- */
 
@@ -247,8 +282,6 @@ body, html
 	background: var(--SystemPrimarySelected);
 	text-shadow: 0px 0px 5px var(--SystemSecondary);
 }
-
-/* ----------------------------- FIM--------------------- */
 
 /* ----------------------------- Estilo da janela de cada imagem --------------------- */
 
@@ -306,14 +339,13 @@ body, html
 {
 	background: rgba(255,255,255,1);
 	margin: auto;
-	padding: 5px;
 	border: 1px solid rgba(0,0,0,1);
 }
 .v-modal-content
 {
 	width: 100%;
 	height: 100%;
-	padding: 5px;
+	padding: 10px;
 	float: left;
 	background: white;
 }
