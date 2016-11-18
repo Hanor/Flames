@@ -1,5 +1,5 @@
 /*
-
+	Author: Hanor Sátiro Cintra
 	Os dados em uma determinada imagem variam de 4 em 4, sendo:
 
 	0 - R
@@ -16,32 +16,32 @@
 
 var Engine = function(elem)
 {
-	var Handler = {};
-	var HTML = {};
-	var Tool = {};
-	var IU = {};
+	var Handler = {}; // Armazena  funções controladoras de execução. É no Handler que os algoritmos como o : LogDog estão
+	var HTML = {}; // Armazena elementos de interface e também promove templates que são carregados na interface
+	var Tool = {}; // Armazena o ultimo setor do sistema visitado, ou seja, a ultima opção selecionada
+	var IU = {}; // É aqui que toda a manipulação de interface ocorre.
 
-	Handler.Algorithms = {};
-	Handler.Helper = {};
-	Handler.Protypes = {};
-	Handler.Vars = {};
+	Handler.Algorithms = {}; //contém todos os algoritmos que são utilizados pelo usuário.
+	Handler.Helper = {}; //contém metodos que auxiliam a execução e manipulação
+	Handler.Protypes = {}; //Similar a orientação a objetos, define escopos de classe 
+	Handler.Vars = {}; //Armazena variavéis de uso generalizado
 
-	HTML.Templates = {};
+	HTML.Templates = {}; // Contém templates de elementos que são carregados na interface
 
-	IU.Animation = {};
-	IU.Events = {};
-	IU.Engine = {};
-	IU.Engine.Drag = {};
-	IU.Load = {};
-	IU.Unset = {};
-	IU.Unload = {};
+	IU.Animation = {}; // Manipula eventos de animação da interface
+	IU.Events = {}; // contém todas as tratativas de eventos do usuário com a interface
+	IU.Engine = {}; // define o comportamento do ZOOM e também do arrastar e soltar
+	IU.Engine.Drag = {}; // define os possíveis estados do arrastar e  soltar
+	IU.Load = {}; // É onde tudo o que é carregado na interface é controlado.
+	IU.Unset = {}; // ao selecionar uma dada opção, para deselecionar esta opção o controlador é o UNSET
+	IU.Unload = {}; // descarrega algo que foi carregado na interface
 
-	this.Init = function()
+	this.Init = function() // torna publico o metodo INIT do objeto Engine.
 	{
-		Handler.Start();
+		Handler.Start(); // Chama o controlador para que ele inicie toda a execução
 	}
 
-	Handler.Start = function()
+	Handler.Start = function() // é a função que acorda todo mundo. Ou seja, carrega desde o tamanho da interface até os eventos da interface.
 	{
 		Handler.Vars.Config = {};
 		Handler.Vars.Eye = new Handler.Protypes.Eye();
@@ -79,7 +79,8 @@ var Engine = function(elem)
 
 	/* ------------------------ Nas funções abaixo estão as técnicas implementadas, é aqui que estão os algoritmos -------------------------*/
 
-	Handler.Algorithms.Gama = function(asks)
+	// É um algoritmo que manipula a quantidade de cinza para cada pixel. Similar ao brilho
+	Handler.Algorithms.Gama = function(asks) 
 	{
 
 		var temp = new Handler.Protypes.CanvasImage(Handler.Vars.Selected.content.width, Handler.Vars.Selected.content.height);
@@ -129,6 +130,7 @@ var Engine = function(elem)
 		tecnica.asks = asks;
 		IU.Load.ImageNew(temp.img, tecnica);
 	}
+	// É um algoritmo que realiza a binarização de uma dada imagem. AO fim, retorna uma imagem binarizada.
 	Handler.Algorithms.Binarization = function(img, threshold)
 	{
 		var width = img.width;
@@ -158,6 +160,7 @@ var Engine = function(elem)
 		}
 		return temp.img;
 	}
+	 // dada um número de iterações, uma imagem e uma mascara, este metódo aplica a convolução desta imagem e retorna está imagem processada
 	Handler.Algorithms.Convolution = function(n, max, img, mask)
 	{	
 		if(n < max)
@@ -204,6 +207,7 @@ var Engine = function(elem)
 		else
 			return img;
 	}
+	// Este metodo calcula a diferença laplaciana
 	Handler.Algorithms.Laplace = function(img_one, img_two)
 	{
 		var height = img_one.height;
@@ -222,6 +226,7 @@ var Engine = function(elem)
 		}
 		return laplace;
 	}
+	// É o algoritimo que visa aplicar vários passos para detectar informações interranstes em uma dada imagem, bem como: escrita e afins.
 	Handler.Algorithms.LogDog = function(asks)
 	{
 		var alfa;
@@ -259,6 +264,7 @@ var Engine = function(elem)
 		tecnica.asks = asks;
 		IU.Load.ImageNew(img_bin, tecnica);
 	}
+	// Este metodo aplica o threshold em uma dada imagem e devolve uma imagem processada
 	Handler.Algorithms.Threshold = function(img, laplace, alfa)
 	{
 		var height = img.height;
@@ -290,7 +296,7 @@ var Engine = function(elem)
 	}
 
 	/* --------------------------------------------------- Funções que auxiliam o programa todo --------------------------------------------------------*/
-
+ 	// Este metodo auxiliar calcula o histograma de uma dada imagem
 	Handler.Helper.CalculateHistograma =  function(img)
 	{
 		var scale = {};
@@ -312,6 +318,7 @@ var Engine = function(elem)
 		
 		img.histograma = scale;
 	}
+	// Este metodo não está sendo utilizado. Este metodo carrega o histograma de uma imagem selecionada.
 	Handler.Helper.Histograma = function(elem, obj)
 	{
       	google.charts.setOnLoadCallback(drawChart);
@@ -655,15 +662,13 @@ var Engine = function(elem)
 			if($(d.frame)[0] == this)
 				break;
 		}
-
 		d.x += d3.event.dx;
 		d.y += d3.event.dy;
 
 		$(d.frame).css("transform", "translate("+ (d.x) +"px,"+ (d.y) +"px)scale("+ d.scale +")");
 	}
 	IU.Engine.Drag.End = function()
-	{
-		// nothing else matter
+	{	
 		d3.event.sourceEvent.stopPropagation();
 		d3.event.sourceEvent.preventDefault();
 	}
@@ -724,7 +729,26 @@ var Engine = function(elem)
 		$(d.frame).css("transform", "translate("+ (d.x) +"px,"+ (d.y) +"px)scale("+ d.scale +")");
 		$(d.frame).trigger('click');
 	}
-
+	IU.Engine.Watch = function()
+	{
+		var cur;
+		var current = Handler.Vars.Selected.elem;
+		for(var i = 0; i < Handler.Vars.Images.length; i++)
+		{
+			var obj =  Handler.Vars.Images[i];
+			if(current[0] == obj.elem[0])
+			{
+				cur = Handler.Vars.Images.splice(i, 1)[0]
+				break;
+			}
+		}
+		Handler.Vars.Images[Handler.Vars.Images.length] = cur;
+		for(var i = 0; i < Handler.Vars.Images.length; i++)
+		{
+			var obj =  Handler.Vars.Images[i];
+			$(obj.elem).css("z-index", i);
+		}
+	}
 	/* ------------------------------------------ São funções que carregam eventos de determinandos elementos da interface -----------------------------------------*/
 
 	IU.Events.Document = function()
@@ -826,44 +850,44 @@ var Engine = function(elem)
 	{
 		elem.unbind('click').on('click', function(ev)
 		{
-			var object;
-			for(var i = 0; i < Handler.Vars.Images.length; i++)
-			{
-				var obj = Handler.Vars.Images[i];
-				if(obj.elem[0] == this)
+			if(!Handler.Vars.Selected.elem || $(this)[0] != Handler.Vars.Selected.elem[0])
+				var object;
+				for(var i = 0; i < Handler.Vars.Images.length; i++)
 				{
-					object = obj;
-					break;
+					var obj = Handler.Vars.Images[i];
+					if(obj.elem[0] == this)
+					{
+						object = obj;
+						break;
+					}
 				}
-			}
 
-			if(Handler.Vars.Selected.elem)
-			{
-			 	$(Handler.Vars.Selected.elem).css({
-			 		"border": "solid 1px rgba(0,0,0,0.1)",
-			 		"z-index": 2
-			 	});
-			 	$(Handler.Vars.Selected.elem).find(".v-window-nav").css({
-			 		"background":"rgba(255,255,255,1)",
-			 		"color" : "rgba(0,0,0,0.4)"
+				if(Handler.Vars.Selected.elem)
+				{
+				 	$(Handler.Vars.Selected.elem).css({
+				 		"border": "solid 1px rgba(0,0,0,0.1)"
+				 	});
+				 	$(Handler.Vars.Selected.elem).find(".v-window-nav").css({
+				 		"background":"rgba(255,255,255,1)",
+				 		"color" : "rgba(0,0,0,0.4)"
+				 	})
+				}
+				$(this).css({
+					"border": "solid 1px rgba(0,0,0,0.5)"
+				});
+
+				$(this).find(".v-window-nav").css({
+			 		"background":"rgba(0,0,0,0.7)",
+			 		"color" : "rgba(255,255,255,1)"
 			 	})
-			}
-			$(this).css({
-				"border": "solid 1px rgba(0,0,0,0.5)",
-				"z-index":3
-			});
 
-			$(this).find(".v-window-nav").css({
-		 		"background":"rgba(0,0,0,0.7)",
-		 		"color" : "rgba(255,255,255,1)"
-		 	})
+				Handler.Vars.Selected.content = object.content;
+				Handler.Vars.Selected.elem = elem;
+				Handler.Vars.Selected.imgObj = object;
 
-			Handler.Vars.Selected.content = object.content;
-			Handler.Vars.Selected.elem = elem;
-			Handler.Vars.Selected.imgObj = object;
-
-			IU.Load.Propperties();
-			ev.preventDefault();
+				IU.Load.Propperties();
+				IU.Engine.Watch();
+				ev.preventDefault();
 		})
 	}
 	IU.Events.ImageNav = function(elem)
@@ -1055,9 +1079,10 @@ var Engine = function(elem)
 			Handler.Vars.Version = version;
 
 			Handler.Helper.CalculateHistograma(to_add_imgObj);
+          	Handler.Vars.Images.push(to_add_imgObj);
+          	
 			IU.Events.ImageNav($(canvas).parent());
           	IU.Events.Image($(canvas).parent());
-          	Handler.Vars.Images.push(to_add_imgObj);
           	IU.Engine.Start_Image(to_add_imgObj);
           	IU.Unload.Modal();
 

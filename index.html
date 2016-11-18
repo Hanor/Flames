@@ -16,24 +16,33 @@
 
     </head>
     <body>
+        <!-- A barra de navegação do sistema. Nesta barra apenas existe o nome do sistema -->
         <div class = "v-nav-bar">
             <div class = "v-nav-bar-item">
                 <span class = "glyphicon glyphicon-fire"></span> Flames 0.3.5
             </div>
         </div>
 
+        <!-- A barra de ferramentas do sistema. Esta barra é preenchida com os componentes la no flames-engine.js -->
+
         <div class = "v-side-bar">
         </div>
+
+        <!-- É aqui nesta div que as imagens são carregadas. -->
 
         <div class = "v-container">
             <div id = "v-draw-space"> 
             </div>
         </div>
 
+
+        <!-- É aqui nesta div que as propriedades da imagem selecionada aparecem. -->
         <div class = "v-properties-bar">
             <div class = "v-properties-bar-head">
                 <span class = "glyphicon glyphicon-info-sign"></span> Informações da imagem
             </div>
+
+            <!-- É aqui nesta div que propriedades como o nome da imagem são carregadas -->
             <div id = "v-properties-caracteristicas" class = "v-properties-content">
                 <div class = "v-properties-head">
                     <span class = "glyphicon glyphicon-camera"></span> Caracteristicas
@@ -42,6 +51,7 @@
                 </div>
             </div>
 
+            <!-- É aqui nesta div que é exibido todas as técnicas que foram aplicadas a imagem -->
             <div id = "v-properties-historico" class = "v-properties-content">
                 <div class = "v-properties-head">
                     <span class = "glyphicon glyphicon-book"></span> Histórico de inferências 
@@ -50,6 +60,7 @@
                 </div>
             </div>
 
+            <!-- É aqui nesta div que o histograma da imagem é exibido -->
             <div id = "v-properties-histograma" class = "v-properties-content">
                 <div class = "v-properties-head">
                     <span class = "glyphicon glyphicon-stats"></span> Histograma da imagem 
@@ -61,12 +72,11 @@
         
     </body>
     <includes>
-        <script src="js/external/modernizr-2.8.3.min.js"></script>
-        <script src="js/external/jquery-1.12.0.min.js"></script>
-        <script src="js/external/jquery-ui.js"></script>
-        <script src="js/external/bootstrap.js"></script>
-        <script src="js/external/d3.js"></script>
-        <script src="js/core/flames-engine.js"></script>
-        <script src="js/commons/init.js"></script>
+        <script src="js/external/jquery-1.12.0.min.js"></script> <!-- É uma lib que oferece um monte de aprimoramentos para o javascript para seleção e inferência nos elementos do HTML -->
+        <script src="js/external/jquery-ui.js"></script> <!-- [Secundário] É uma lib que fornece efeitos para interface -->
+        <script src="js/external/bootstrap.js"></script> <!-- [Secundário] É uma lib que fornece alguns mecanismos de interface "bonitos"  e responsivos-->
+        <script src="js/external/d3.js"></script> <!-- [Secundário] É uma lib que fornece mecanismos como o ZOOM, o drag and drop e afins  -->
+        <script src="js/core/flames-engine.js"></script> <!-- [Primário] É uma aqui que TUDO ESTÁ! Implementação de interface e afins  -->
+        <script src="js/commons/init.js"></script> <!-- [Primário] É o arquivo que inicializa a execução do Flames  -->
     </includes>
 </html>
