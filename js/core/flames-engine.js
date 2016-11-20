@@ -299,54 +299,63 @@ var Engine = function(elem)
  	// Este metodo auxiliar calcula o histograma de uma dada imagem
 	Handler.Helper.CalculateHistograma =  function(img)
 	{
-		var scale = {};
+		var scale = {
+			red :[],
+			green: [],
+			blue: []
+		};
 		var data = img.content.data;
 
-		for(var i = 0; i < 256; i++)
+		for(var i  = 0; i < 256; i++)
 		{
-			scale[ ""+i ] = {};
-			scale[ ""+i ].Red = 0;
-			scale[ ""+i ].Green = 0;
-			scale[ ""+i ].Blue = 0;
+			scale.red[i] = 0;
+			scale.green[i] = 0;
+			scale.blue[i] = 0;
 		}
-		for(var i = 0; i < data.length; i += 4)
+
+		for(var i  = 0; i < data.length; i = i + 4)
 		{
-			scale[data[i]].Red += 1;
-			scale[data[i+1]].Green += 1;
-			scale[data[i+2]].Blue += 1;
+			scale.red[data[i]] += 1;
+			scale.green[data[i + 1]] += 1;
+			scale.blue[data[i + 2]] += 1;
 		}
-		
+
 		img.histograma = scale;
 	}
-	// Este metodo não está sendo utilizado. Este metodo carrega o histograma de uma imagem selecionada.
-	Handler.Helper.Histograma = function(elem, obj)
+	// valida as variaveis informadas no modal para cada algoritmo
+	Handler.Helper.Validator = function(config)
 	{
-      	google.charts.setOnLoadCallback(drawChart);
+		var isValid = true;
+		var variables = [];
+		$('.v-modal-body').find('.v-modal-ask').each(function()
+		{
 
-      	function drawChart() 
-      	{
-      		var histo = [];
-      		histo.push(['Nível de Cinza', 'Red', 'Green', 'Blue'])
-      		for(var i = 0; i < 256; i++)
-      		{
-      			var scale = obj.imgObj.histograma[i];
-      			histo.push([i, scale.Red, scale.Green, scale.Blue]);
-      		}
+			var name = $($(this).find('td').get(0)).text();
+			var value = $($(this).find('td').get(1)).find('input').val();
+			var ask;
 
-	        var data = google.visualization.arrayToDataTable(histo);
+			for(var i = 0; i < config.asks.length; i++)
+				if(config.asks[i].name == name)
+				{
+					ask = config.asks[i];
+					break;
+				}
 
-	        var options = {
-	          legend: { position: 'bottom' },
-	          colors: ['red', 'green', 'blue'],
-	          width:270,
-	          height:400,
-	          'margin-left':-5,
-	          'margin-top':0,
-	          background:'none'
-	        };
-	        var chart = new google.visualization.LineChart(elem);
-        	chart.draw(data, options);
-        }
+			isValid = ask.regex.test(value);
+			if(isValid)
+				variables.push({name:name, value:value});
+		})
+
+		if(isValid)
+		{
+			var newConfig = 
+			{
+				type: "loader"
+			}
+			IU.Unload.Modal(true);
+			IU.Load.Modal(newConfig);
+			config.handler(variables);
+		}
 	}
 
 	/* ----------------------------------------- São notações de objetos que auxiliam na organização e contro dos elementos --------------------------------------*/
@@ -411,15 +420,14 @@ var Engine = function(elem)
 
 	/* ----------------------------------------------------- Componentes HTML que serão carregados conforme demanda -----------------------------------------------*/
 
-	HTML.Templates.AskableBody =  function(ask, config)
+	HTML.Templates.AskableBody =  function(ask)
 	{
 		var template = '';
-		template += '<div class = "v-modal-ask-line">'
 		template += '<table class = "table table-striped">'
 		template += '<tbody>'
 		template += '<thead>'
-		template += '<th style = "width:'+ ((config.width/2) - 10) +'px"> Nome </th>'
-		template += '<th style = "width:'+ ((config.width/2) - 10) +'px"> Valor </th>'
+		template += '<th style = "width: 50%"> Nome </th>'
+		template += '<th style = "width: 50%"> Valor </th>'
 		template += '</thead>'
 		for(var i = 0; i < ask.length; i++)
 		{
@@ -435,39 +443,35 @@ var Engine = function(elem)
 
 		template += '</tbody>'
 		template += '</table>'
-		template += '</div>'
-		return template;
-	}
-	HTML.Templates.AskableHead =  function(ask)
-	{
-		var template = '';
-		template += '<div class = "v-modal-head-line">'
-		template += '<span class = "glyphicon glyphicon-info-sign" style = "font-size:18px; margin-top:10px !important;"></span>'
-		template += ' <span style = "margin-top:-10px,">Informe o valor que serão usados na técnica selecionada</span>'
-		template += '</div>'		
 		return template;
 	}
 	HTML.Templates.AskableFooter =  function()
 	{
 		var template = '';
 
-		template += '<div class = "v-modal-footer-line">'
 		template += '<div class = "v-btn-cancel">'
 		template += '<span class = "glyphicon glyphicon-remove"></span>'
 		template += '</div>'
 		template += '<div class = "v-btn-apply">'
 		template += '<span class = "glyphicon glyphicon-ok"></span>';
 		template += '</div>'
+
+		return template;
+	}
+	HTML.Templates.CloseModal = function()
+	{
+		var template = '';
+
+		template += '<div class = "v-btn-cancel">'
+		template += '<span class = "glyphicon glyphicon-remove"></span>'
 		template += '</div>'
 
 		return template;
 	}
-	HTML.Templates.Loader =  function(width, height)
+	HTML.Templates.Loader =  function()
 	{
 		var template = '';
-		var margin_top = (height - 110)/2;
-		var margin_left = (width - 110)/2;
-		template += '<img src = "img/animation.svg" style = "width:100px; height:100px; margin-left:'+ margin_left +'px; margin-top:'+ margin_top +'px">'
+		template += '<img src = "img/animation.svg" style = "width:100px; height:100px;">'
 		return template;
 	}
 	HTML.Templates.LoadNewImage =  function(name, id, original)
@@ -490,19 +494,21 @@ var Engine = function(elem)
 		template += '</div>';
 		return template;
 	}
-	HTML.Templates.Modal =  function(config)
+	HTML.Templates.Modal =  function(title)
 	{
 		var template = '';
-		var margin_top = $('body').height() /2 - config.height/2;
-		template += '<div class = "v-modal-background">'
-		template += '<div class = "v-modal" style = "width:'+ config.width +'px; height:'+ config.height +'px; margin-top:'+ margin_top +'px; background:none">'
-		template += '<div class = "v-modal-content">'
-		template += '<div class = "v-modal-head" style = "height:'+ config.head_height +'">'
+		template += '<div class = "v-modal">'
+		template += '<div class = "v-modal-window">'
+		template += '<div class = "v-modal-head">'
+		if(title)
+		{
+			template += '<span class = "glyphicon glyphicon-info-sign" style = "font-size:18px; margin-top:10px !important;"></span>'
+			template += ' <span style = "margin-top:-10px,">'+ title +'</span>'
+		}
 		template += '</div>'
-		template += '<div class = "v-modal-body" style = "height:'+ config.body_height +'">'
+		template += '<div id = "v-modal-body" class = "v-modal-body">'
 		template += '</div>'
-		template += '<div class = "v-modal-footer" style = "height:'+ config.footer_height +'">'
-		template += '</div>'
+		template += '<div class = "v-modal-footer">'
 		template += '</div>'
 		template += '</div>'
 		template += '</div>'
@@ -672,6 +678,43 @@ var Engine = function(elem)
 		d3.event.sourceEvent.stopPropagation();
 		d3.event.sourceEvent.preventDefault();
 	}
+	IU.Engine.Modal = function(elem, config)
+	{
+		$('body').scrollTop(0);
+
+		var mWindow = elem.find(".v-modal-window");
+		var height = mWindow.height();
+		var width = mWindow.width();
+		var marginTop;
+		var marginLeft;
+
+		// if(!config || config.type != "loader" && Handler.Vars.ModalChart)
+		// {
+		// 	if($('body').width() < 900)
+		// 		width = $('body').width() - 15;
+		// 	else
+		// 		width = 900;
+
+		// 	height = $('body').height() - 100;
+		// 	Handler.Vars.ModalChart.setSize(width - 15, height - 100, doAnimation = true);
+		// }
+
+		marginTop = (elem.height() / 2) - (height / 2);
+		marginLeft = (elem.width() / 2) - (width / 2);
+
+		mWindow.css(
+		{
+			"margin-top": marginTop,
+			"margin-left": marginLeft,
+		})
+
+		// 	width : width,
+		// 	height: height
+		// }) 
+
+		if(config && config.type != "loader")
+			IU.Events.Modal(mWindow, config);
+	}
 	IU.Engine.Start = function()
 	{
 		Handler.Vars.Eye.frame = HTML.DrawSpace;	
@@ -693,7 +736,7 @@ var Engine = function(elem)
 
 		HTML.DrawSpace.css('transform', 'translate(-'+ Handler.Vars.Eye.x +'px, -'+ Handler.Vars.Eye.y +'px)');
 	}
-	IU.Engine.Start_Image = function(d)
+	IU.Engine.StartImage = function(d)
 	{
 		var zoom = d3.zoom()
 			.on("zoom", IU.Engine.Zoom)
@@ -753,7 +796,6 @@ var Engine = function(elem)
 
 	IU.Events.Document = function()
 	{
-
 		$( window ).resize(function(ev)
 		{
 			var height = $('body').height();
@@ -766,6 +808,19 @@ var Engine = function(elem)
 
 			Handler.Vars.Config.windowHeight = height;
 			Handler.Vars.Config.windowWidth = width;
+
+			if(Handler.Vars.Chart)
+			{
+				if(width <= 559)
+					Handler.Vars.Chart.setSize($('.v-histograma').width(), 400, doAnimation = true);
+				else
+					Handler.Vars.Chart.setSize($('.v-histograma').width(), $('.v-histograma').height(), doAnimation = true);
+			}
+
+
+			if($('.v-modal')[0])
+				IU.Engine.Modal($('.v-modal'));
+
 			ev.preventDefault();
 		})
 
@@ -846,11 +901,35 @@ var Engine = function(elem)
 			ev.preventDefault();
 		})
 	}
+	IU.Events.Histograma = function()
+	{
+		$("#v-histograma-modal").unbind("mouseover").on("mouseover", function(ev)
+		{
+			$(this).tooltip("toggle");
+		})
+		$("#v-histograma-modal").unbind("mouseleave").on("mouseleave", function(ev)
+		{
+			$(this).tooltip("toggle");
+		})
+
+		$("#v-histograma-modal").unbind('click').on('click', function(ev)
+		{
+			var config = 
+			{
+				title: "Histrograma da imagem "+ Handler.Vars.Selected.imgObj.name,
+				type:"histograma"
+			}
+
+			IU.Load.Modal(config);
+			ev.preventDefault();
+		})
+	}
 	IU.Events.Image = function(elem)
 	{
 		elem.unbind('click').on('click', function(ev)
 		{
 			if(!Handler.Vars.Selected.elem || $(this)[0] != Handler.Vars.Selected.elem[0])
+			{
 				var object;
 				for(var i = 0; i < Handler.Vars.Images.length; i++)
 				{
@@ -888,6 +967,7 @@ var Engine = function(elem)
 				IU.Load.Propperties();
 				IU.Engine.Watch();
 				ev.preventDefault();
+			}
 		})
 	}
 	IU.Events.ImageNav = function(elem)
@@ -914,6 +994,21 @@ var Engine = function(elem)
 
 			if(Handler.Vars.Images.length == 0)
 				$('#v-stop-image').trigger('click');
+
+			ev.preventDefault();
+		})
+	}
+	IU.Events.Modal = function(elem, config)
+	{
+		elem.find('.v-modal-footer').find('.v-btn-cancel').unbind("click").on("click", function(ev)
+		{
+			IU.Unload.Modal(true);
+			ev.preventDefault();
+		})
+		elem.find('.v-modal-footer').find('.v-btn-apply').unbind("click").on("click", function(ev)
+		{
+			if(config.type == "askable")
+				Handler.Helper.Validator(config);
 
 			ev.preventDefault();
 		})
@@ -964,19 +1059,22 @@ var Engine = function(elem)
 
 				if(Handler.Vars.Selected.elem)
 				{
-					var algorith_config = Handler.Vars.Algorithms[opt];
-					var modal_config = {
-						head_height : "50px",
-						body_height : ((50 * algorith_config.length) + 50) +"px",
-						footer_height : "50px",
-						height: 165 + (50 * algorith_config.length),
-						width: 600
+					var config = {
+						title: "Informe o valor que serão usados na técnica selecionada",
+						type :"askable",
+						handler: null,
+						validator:null,
+						asks:null
 					}
+					var asks = Handler.Vars.Algorithms[opt];
 
 					if(opt == "LogDog")
-						IU.Load.Modal("askable", modal_config, algorith_config, Handler.Algorithms.LogDog);
+						config.handler = Handler.Algorithms.LogDog;
 					else if(opt == "Gama")
-						IU.Load.Modal("askable", modal_config, algorith_config, Handler.Algorithms.Gama);
+						config.handler = Handler.Algorithms.Gama;
+
+					config.asks = asks;
+					IU.Load.Modal(config);
 				}
 				else
 				{
@@ -1032,19 +1130,85 @@ var Engine = function(elem)
 		algorithms_askable.Gama.push(gama_gama);
 		Handler.Vars.Algorithms = algorithms_askable;
 	}
+	// Este metodo não está sendo utilizado. Este metodo carrega o histograma de uma imagem selecionada.
+	IU.Load.Histograma = function(imagem, obj, elem, width, height)
+	{
+		Highcharts.setOptions({colors:["#B22222", "#228B22", "#4682B4"]})
+		var chart = Highcharts.chart(elem, {
+	        chart: {
+	            type: 'area',
+	            width: width,
+	            height: height,
+	            animation: false
+	        },
+	        title: {
+	            text: 'Histograma'
+	        },
+	        xAxis: {
+	        	title: {
+	                text: 'Níveis de cinza'
+	            },
+	            labels: {
+	                formatter: function () {
+	                    return this.value; // clean, unformatted number for year
+	                }
+	            },
+	            tickInterval: 50
+	        },
+	        yAxis: {
+            	opposite: true,
+	            title: {
+	                text: 'Pixels'
+	            },
+	            labels: {
+	                formatter: function () {
+	                    return this.value / 1000 + 'k';
+	                }
+	            }
+	        },
+	        tooltip: {
+	            pointFormat: '{series.name} possui <b>{point.y:,.0f}</b><br/> no nível de cinza {point.x}'
+	        },
+	        plotOptions: {
+	            area: {
+	                pointStart: 0,
+	                marker: {
+	                    enabled: false,
+	                    symbol: 'circle',
+	                    radius: 2,
+	                    states: {
+	                        hover: {
+	                            enabled: true
+	                        }
+	                    }
+	                }
+	            }
+	        },
+	        series: [{
+	            name: 'Red',
+	            data: obj.histograma.red
+	        }, {
+	            name: 'Green',
+	            data: obj.histograma.green
+	        }, {
+	        	name: 'Blue',
+	            data: obj.histograma.blue
+	        }]
+	    });
+	    if(elem == "v-modal-body")
+	    	Handler.Vars.ModalChart = chart;
+	    else
+	    	Handler.Vars.Chart = chart;
+	}
 	IU.Load.Image = function(img, imgObj)
 	{
 
-		var modal_config = 
+		var config = 
 		{
-			head_height : "5px",
-			body_height : "120px",
-			footer_height : "5px",
-			height: 150,
-			width: 130
+			type: "loader"
 		}
 
-		IU.Load.Modal('loader', modal_config);
+		IU.Load.Modal(config);
 
 		var canvas;
 		var width;
@@ -1083,7 +1247,7 @@ var Engine = function(elem)
           	
 			IU.Events.ImageNav($(canvas).parent());
           	IU.Events.Image($(canvas).parent());
-          	IU.Engine.Start_Image(to_add_imgObj);
+          	IU.Engine.StartImage(to_add_imgObj);
           	IU.Unload.Modal();
 
           	$($(canvas).parent()).trigger('click');
@@ -1126,7 +1290,7 @@ var Engine = function(elem)
 		Handler.Vars.Images.push(imgObj);
 		IU.Events.ImageNav($(canvas).parent());
 		IU.Events.Image($(canvas).parent());
-		IU.Engine.Start_Image(imgObj);
+		IU.Engine.StartImage(imgObj);
 		IU.Unload.Modal();
 
 		$($(canvas).parent()).trigger('click');
@@ -1146,68 +1310,31 @@ var Engine = function(elem)
 			})
 		}
 	}
-	IU.Load.Modal = function(type, config, to_ask, call_back)
+	IU.Load.Modal = function(config)
 	{
-		$('.v-modal-background').remove();
-		$('body').append(HTML.Templates.Modal(config));
-		if(type == 'loader')
+		var elem = $('body').append(HTML.Templates.Modal(config.title));
+
+		elem.attr("scrollHeigth", $('body').attr("scrollHeigth"));
+
+		if(config.type == 'loader')
 		{
-			$('.v-modal-content').css("background", "none");
-			$('.v-modal').css("border", "none");
-			$('.v-modal-background').find('.v-modal-body').append(HTML.Templates.Loader(config.width, config.height));
+			elem.find('.v-modal-window').css("background", "none");
+			elem.find('.v-modal-window').find('.v-modal-head').css("border", "none");
+			elem.find('.v-modal-window').find('.v-modal-body').css("border", "none");
+			elem.find('.v-modal-window').find('.v-modal-body').append(HTML.Templates.Loader());
 		}
-		else if(type == 'askable')
+		else if(config.type == 'askable')
 		{
-
-			$('.v-modal-background').find('.v-modal-head').append(HTML.Templates.AskableHead());
-			$('.v-modal-background').find('.v-modal-body').append(HTML.Templates.AskableBody(to_ask, config));
-			$('.v-modal-background').find('.v-modal-footer').append(HTML.Templates.AskableFooter());
-
-			$('.v-modal-footer').find('.v-btn-apply').on("click", function(ev)
-			{
-				var isValid = true;
-				var variables = [];
-				$('.v-modal-body').find('.v-modal-ask').each(function()
-				{
-
-					var name = $($(this).find('td').get(0)).text();
-					var value = $($(this).find('td').get(1)).find('input').val();
-					var ask;
-
-					for(var i = 0; i < to_ask.length; i++)
-						if(to_ask[i].name == name)
-						{
-							ask = to_ask[i];
-							break;
-						}
-
-					isValid = ask.regex.test(value);
-					if(isValid)
-						variables.push({name:name, value:value});
-				})
-
-				if(isValid)
-				{
-					var modal_config = 
-					{
-						head_height : "5px",
-						body_height : "120px",
-						footer_height : "5px",
-						height: 150,
-						width: 130
-					}
-
-					IU.Load.Modal('loader', modal_config);
-					call_back(variables);
-				}
-				ev.preventDefault();
-			})
-			$('.v-modal-footer').find('.v-btn-cancel').on("click", function(ev)
-			{
-				IU.Unload.Modal(true);
-				ev.preventDefault();
-			})
+			elem.find('.v-modal-window').find('.v-modal-body').append(HTML.Templates.AskableBody(config.asks));
+			elem.find('.v-modal-window').find('.v-modal-footer').append(HTML.Templates.AskableFooter());
 		}
+		else if(config.type == 'histograma')
+		{
+			elem.find('.v-modal-window').find('.v-modal-footer').append(HTML.Templates.CloseModal());	
+			IU.Load.Histograma(HTML.PropertiesBar.Histograma[0], Handler.Vars.Selected.imgObj, 'v-modal-body', 600, 600);
+		}
+
+		IU.Engine.Modal(elem, config);
 	}
 	IU.Load.Propperties = function()
 	{
@@ -1220,9 +1347,10 @@ var Engine = function(elem)
 				HTML.PropertiesBar.Caracteristicas.empty().append(HTML.Templates.PropertiesInformations(current));
 				HTML.PropertiesBar.Historico.empty().append(HTML.Templates.PropertiesHistory(current));
 				HTML.PropertiesBar.Histograma.empty().append(HTML.Templates.PropertiesHistograma(current));
-
 				HTML.PropertiesBar.Histograma.empty();
-				//Handler.Helper.Histograma(HTML.PropertiesBar.Histograma[0], current);
+
+				IU.Events.Histograma();
+				IU.Load.Histograma(HTML.PropertiesBar.Histograma[0], current.imgObj, 'v-histograma', $('#v-histograma').parent().parent().width(), 400);
 			}
 			else
 				IU.Unset.Properties();
@@ -1276,14 +1404,17 @@ var Engine = function(elem)
 
 	IU.Unload.Modal = function(now)
 	{
+		if(Handler.Vars.ModalChart)
+			Handler.Vars.ModalChart = null;
+
 		if(!now)
 		{
 			setTimeout(function(){
-				$('.v-modal-background').remove();	
+				$('.v-modal').remove();	
 			},300)
 		}
 		else
-			$('.v-modal-background').remove();
+			$('.v-modal').remove();
 	}
 	IU.Unload.Propperties = function()
 	{

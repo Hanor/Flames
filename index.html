@@ -63,9 +63,10 @@
             <!-- É aqui nesta div que o histograma da imagem é exibido -->
             <div id = "v-properties-histograma" class = "v-properties-content">
                 <div class = "v-properties-head">
-                    <span class = "glyphicon glyphicon-stats"></span> Histograma da imagem 
+                    <span class = "glyphicon glyphicon-stats"></span> Histograma da imagem  
+                    <span id = "v-histograma-modal" class = "glyphicon glyphicon-zoom-in" title = "Ampliar histograma" data-placement = "bottom"></span>
                 </div>
-                <div class =  "v-properties-body" style = "height:300px">
+                <div id = "v-histograma" class =  "v-properties-body" style = "height:400px">
                 </div>
             </div>
         </div>
@@ -76,6 +77,7 @@
         <script src="js/external/jquery-ui.js"></script> <!-- [Secundário] É uma lib que fornece efeitos para interface -->
         <script src="js/external/bootstrap.js"></script> <!-- [Secundário] É uma lib que fornece alguns mecanismos de interface "bonitos"  e responsivos-->
         <script src="js/external/d3.js"></script> <!-- [Secundário] É uma lib que fornece mecanismos como o ZOOM, o drag and drop e afins  -->
+        <script src="js/external/highcharts.js"></script> <!-- [Secundário] É uma lib que fornece mecanismos para o histograma. É por meio dele que plotagem de gráficos e afins são feitas.  -->
         <script src="js/core/flames-engine.js"></script> <!-- [Primário] É uma aqui que TUDO ESTÁ! Implementação de interface e afins  -->
         <script src="js/commons/init.js"></script> <!-- [Primário] É o arquivo que inicializa a execução do Flames  -->
     </includes>
