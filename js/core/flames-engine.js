@@ -914,11 +914,11 @@ var Engine = function(elem)
 	{
 		$("#v-histograma-modal").unbind("mouseover").on("mouseover", function(ev)
 		{
-			$(this).tooltip("toggle");
+			$(this).tooltip("show");
 		})
 		$("#v-histograma-modal").unbind("mouseleave").on("mouseleave", function(ev)
 		{
-			$(this).tooltip("toggle");
+			$(this).tooltip("hide");
 		})
 
 		$("#v-histograma-modal").unbind('click').on('click', function(ev)
@@ -928,7 +928,7 @@ var Engine = function(elem)
 				title: "Histrograma da imagem "+ Handler.Vars.Selected.imgObj.name,
 				type:"histograma"
 			}
-			$(this).tooltip("toggle");
+			$(this).tooltip("hide");
 			IU.Load.Modal(config);
 			ev.preventDefault();
 		})
