@@ -105,12 +105,12 @@ body, html
 .v-container
 {
 	float: left;
-	position: relative;
 	overflow: hidden;
+	margin: 0px;
 }
 #v-draw-space
 {
-	position:relative;
+	float: left;
 	overflow: hidden;
 }
 
@@ -165,13 +165,14 @@ body, html
 {
 	.v-properties-bar
 	{
-		position: relative;
 		float: left;
+		position: relative;
 		width:100%; 
 		height: auto;
+
 		background:rgba(255,255,255,0.8);
-		z-index: 1000;
 		color:rgba(0,0,0,0.6);
+		
 		display: none;
 		border-left:1px solid rgba(0,0,0,0.1);
 		word-wrap: break-word;
@@ -198,7 +199,7 @@ body, html
 		float: left;
 		border-bottom:1px solid rgba(0,0,0,0.1);
 		padding-bottom: 10px;
-		padding-left: 15px;
+		padding-left: 10px;
 	}
 }
 .v-properties-head
@@ -315,7 +316,7 @@ body, html
 	position:absolute;
 	background:rgba(0,0,0,0.5);
 	border: solid 1px rgba(0,0,0,0.2);
-	z-index: 3;
+	z-index: 4;
 }
 .v-window-nav
 {
@@ -356,18 +357,22 @@ body, html
 	position: absolute;
 	width: 100%;
 	height: 100%;
-	background: rgba(0,0,0,0.9);
-	z-index: 1000000000000000;
 	min-height: var(--SystemMinHeight);
 	min-width: var(--SystemMinWidth);
+
+	background: rgba(0,0,0,0.92);
+	z-index: 1000000000000000;
 }
 .v-modal-window
 {
 	float: left;
-	position: relative;
-	margin: 0;
-	background: rgba(255,255,255,1);
+	height: auto;
+	width: auto;
+	min-height: 195px;
+	min-width: 200px;
 	padding: 15px;
+
+	background: rgba(255,255,255,1);
 }
 .v-modal-head, .v-modal-body, .v-modal-footer
 {
@@ -383,11 +388,12 @@ body, html
 .v-modal-body
 {
 	overflow: auto;
+	overflow-x: hidden;
 }
 .v-modal-head
 {
 	font-size: 14px;
-	line-height: 50px;
+	line-height: 30px;
 	font-weight: bold;
 }
 .v-modal-footer

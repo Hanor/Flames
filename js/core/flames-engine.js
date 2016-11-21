@@ -52,8 +52,6 @@ var Engine = function(elem)
 
 		Handler.Vars.Config.width = 50000;
 		Handler.Vars.Config.height = 50000;
-		Handler.Vars.Config.windowHeight = $('body').height();
-		Handler.Vars.Config.windowWidth = $('body').width();
 
 		Tool.elem = $('NULL');
 		Tool.popover = false;
@@ -348,12 +346,8 @@ var Engine = function(elem)
 
 		if(isValid)
 		{
-			var newConfig = 
-			{
-				type: "loader"
-			}
 			IU.Unload.Modal(true);
-			IU.Load.Modal(newConfig);
+			IU.Load.Modal({type: "loader"});
 			config.handler(variables);
 		}
 	}
@@ -502,8 +496,8 @@ var Engine = function(elem)
 		template += '<div class = "v-modal-head">'
 		if(title)
 		{
-			template += '<span class = "glyphicon glyphicon-info-sign" style = "font-size:18px; margin-top:10px !important;"></span>'
-			template += ' <span style = "margin-top:-10px,">'+ title +'</span>'
+			template += '<span class = "glyphicon glyphicon-info-sign" style = "font-size:18px;"></span>'
+			template += ' <span>'+ title +'</span>'
 		}
 		template += '</div>'
 		template += '<div id = "v-modal-body" class = "v-modal-body">'
@@ -651,6 +645,18 @@ var Engine = function(elem)
 	
 	/* ---------------------- Nas funções abaixo é onde ocorrem inferências de controle dos objetos bem como arrastar, zoom e etc ------------------------*/
 
+	IU.Engine.Charts = function()
+	{
+		if(Handler.Vars.Chart)
+		{
+			if($('body').width() <= 559)
+				Handler.Vars.Chart.setSize($('#v-histograma').width(), 400, doAnimation = true);
+			else
+				Handler.Vars.Chart.setSize($('#v-histograma').width(), $('#v-histograma').height(), doAnimation = true);
+		}
+		if(Handler.Vars.ModalChart)
+			Handler.Vars.ModalChart.setSize($('.v-modal-window').width() - 10, $('.v-modal-window').height() - 135, doAnimation = false);
+	}
 	IU.Engine.Drag.Start = function()
 	{
 		d3.event.sourceEvent.stopPropagation();
@@ -681,57 +687,69 @@ var Engine = function(elem)
 	IU.Engine.Modal = function(elem, config)
 	{
 		$('body').scrollTop(0);
+		HTML.PropertiesBar.Elem.fadeOut(0);
 
 		var mWindow = elem.find(".v-modal-window");
 		var height = mWindow.height();
 		var width = mWindow.width();
 		var marginTop;
 		var marginLeft;
+		var valid = !config || config.type != "loader";
 
-		// if(!config || config.type != "loader" && Handler.Vars.ModalChart)
-		// {
-		// 	if($('body').width() < 900)
-		// 		width = $('body').width() - 15;
-		// 	else
-		// 		width = 900;
+		if(valid)
+		{
+			if($('body').width() >= 1000)
+				width = 950;
+			else if($('body').width() < 1000)
+				width = $('body').width() - $('body').width() * 0.2
 
-		// 	height = $('body').height() - 100;
-		// 	Handler.Vars.ModalChart.setSize(width - 15, height - 100, doAnimation = true);
-		// }
+			if(Handler.Vars.ModalChart)
+			{
+				if($('body').height() >= 800)
+					height = 750 - 100;
+				else if($('body').height() < 800)
+					height = $('body').height() - $('body').height() * 0.2 - 100;
 
-		marginTop = (elem.height() / 2) - (height / 2);
+				mWindow.find(".v-modal-body").css({
+					height: height
+				})
+			}
+		}
+
+		height = mWindow.height();
+		marginTop = (elem.height() / 2) - (height / 2) -15;
 		marginLeft = (elem.width() / 2) - (width / 2);
 
 		mWindow.css(
 		{
 			"margin-top": marginTop,
 			"margin-left": marginLeft,
+			width: width
 		})
 
-		// 	width : width,
-		// 	height: height
-		// }) 
+		if(Handler.Vars.ModalChart)
+			IU.Engine.Charts();
 
-		if(config && config.type != "loader")
+		if(valid && config)
 			IU.Events.Modal(mWindow, config);
 	}
 	IU.Engine.Start = function()
-	{
+	{	
+		var height = $('body').height();
+		var width = $('body').width();
+
 		Handler.Vars.Eye.frame = HTML.DrawSpace;	
 		Handler.Vars.Eye.x = Handler.Vars.Config.width/2;
 		Handler.Vars.Eye.y = Handler.Vars.Config.height/2;
 
-		Handler.Vars.Eye.frame.css({
-			width: Handler.Vars.Config.width,
-			height: Handler.Vars.Config.height
-		})
-
-		var height = $('body').height();
-		var width = $('body').width();
-
 		Handler.Vars.Eye.frame.parent().css({
 			height: 'calc('+ height +'px - var(--SystemBarSize))',
 			width: 'calc('+ width +'px - var(--SystemBarSize))'
+		})
+
+		Handler.Vars.Eye.frame.css({
+			width: Handler.Vars.Config.width,
+			height: Handler.Vars.Config.height
 		})
 
 		HTML.DrawSpace.css('transform', 'translate(-'+ Handler.Vars.Eye.x +'px, -'+ Handler.Vars.Eye.y +'px)');
@@ -796,28 +814,19 @@ var Engine = function(elem)
 
 	IU.Events.Document = function()
 	{
-		$( window ).resize(function(ev)
+		$( window ).on("resize",function(ev)
 		{
 			var height = $('body').height();
 			var width = $('body').width();
+
+			console.log("k")
 
 			Handler.Vars.Eye.frame.parent().css({
 				height: 'calc('+ height +'px - var(--SystemBarSize))',
 				width: 'calc('+ width +'px - var(--SystemBarSize))'
 			})
 
-			Handler.Vars.Config.windowHeight = height;
-			Handler.Vars.Config.windowWidth = width;
-
-			if(Handler.Vars.Chart)
-			{
-				if(width <= 559)
-					Handler.Vars.Chart.setSize($('.v-histograma').width(), 400, doAnimation = true);
-				else
-					Handler.Vars.Chart.setSize($('.v-histograma').width(), $('.v-histograma').height(), doAnimation = true);
-			}
-
-
+			IU.Engine.Charts();
 			if($('.v-modal')[0])
 				IU.Engine.Modal($('.v-modal'));
 
@@ -919,7 +928,7 @@ var Engine = function(elem)
 				title: "Histrograma da imagem "+ Handler.Vars.Selected.imgObj.name,
 				type:"histograma"
 			}
-
+			$(this).tooltip("toggle");
 			IU.Load.Modal(config);
 			ev.preventDefault();
 		})
@@ -1023,7 +1032,8 @@ var Engine = function(elem)
 			$('#v-input-load').unbind('change').on('change', function(loaded)
 			{
 				var files = loaded.target.files;
-				$("#v-input-info").val(files[0].name);
+				if(files[0])
+					$("#v-input-info").val(files[0].name);
 				$("#btn-submit").unbind('click').on('click', function(evt)
 				{
 					evt.preventDefault();
@@ -1203,12 +1213,7 @@ var Engine = function(elem)
 	IU.Load.Image = function(img, imgObj)
 	{
 
-		var config = 
-		{
-			type: "loader"
-		}
-
-		IU.Load.Modal(config);
+		IU.Load.Modal({type: "loader"});
 
 		var canvas;
 		var width;
@@ -1248,6 +1253,7 @@ var Engine = function(elem)
 			IU.Events.ImageNav($(canvas).parent());
           	IU.Events.Image($(canvas).parent());
           	IU.Engine.StartImage(to_add_imgObj);
+
           	IU.Unload.Modal();
 
           	$($(canvas).parent()).trigger('click');
@@ -1314,8 +1320,6 @@ var Engine = function(elem)
 	{
 		var elem = $('body').append(HTML.Templates.Modal(config.title));
 
-		elem.attr("scrollHeigth", $('body').attr("scrollHeigth"));
-
 		if(config.type == 'loader')
 		{
 			elem.find('.v-modal-window').css("background", "none");
@@ -1331,7 +1335,7 @@ var Engine = function(elem)
 		else if(config.type == 'histograma')
 		{
 			elem.find('.v-modal-window').find('.v-modal-footer').append(HTML.Templates.CloseModal());	
-			IU.Load.Histograma(HTML.PropertiesBar.Histograma[0], Handler.Vars.Selected.imgObj, 'v-modal-body', 600, 600);
+			IU.Load.Histograma(HTML.PropertiesBar.Histograma[0], Handler.Vars.Selected.imgObj, 'v-modal-body', 950, 600);
 		}
 
 		IU.Engine.Modal(elem, config);
@@ -1356,6 +1360,8 @@ var Engine = function(elem)
 				IU.Unset.Properties();
 
 			$(".v-properties-bar").show();
+			console.log("?")
+			$(window).trigger("resize");
 		}
 	}
 	IU.Load.Popovers = function()
@@ -1409,12 +1415,23 @@ var Engine = function(elem)
 
 		if(!now)
 		{
-			setTimeout(function(){
+			setTimeout(function()
+			{
 				$('.v-modal').remove();	
+				if(Handler.Vars.PropertiesWatch)
+				HTML.PropertiesBar.Elem.fadeIn(50);
+				IU.Engine.Charts();
+          		$(window).trigger("resize");
 			},300)
 		}
 		else
+		{
 			$('.v-modal').remove();
+			if(Handler.Vars.PropertiesWatch)
+				HTML.PropertiesBar.Elem.fadeIn(300);
+			IU.Engine.Charts();
+			$(window).trigger("resize");
+		}
 	}
 	IU.Unload.Propperties = function()
 	{
@@ -1422,6 +1439,7 @@ var Engine = function(elem)
 		HTML.PropertiesBar.Historico.empty();
 		HTML.PropertiesBar.Histograma.empty();
 		HTML.PropertiesBar.Elem.hide();
+		$(window).trigger("resize");
 	}
 
 	/* ------------------------------------------- Controla variavéis e elementos do HTML para retroceder ao estado original ----------------------------------------*/
